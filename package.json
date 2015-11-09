@@ -1,0 +1,19 @@
+{
+  "name": "babel-plugin-import-css-to-jss",
+  "version": "0.0.1",
+  "description": "Babel plugin to convert css imports into jss objects",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "babel",
+    "jss"
+  ],
+  "author": "Websecurfiy <contact@websecurify.com>",
+  "license": "MIT",
+  "dependencies": {
+    "jss-cli": "^1.1.0",
+    "require-resolve": "0.0.2"
+  }
+}
