@@ -10,6 +10,11 @@
     "babel",
     "jss"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/websecurify/babel-plugin-import-css-to-jss.git",
+    "web": "https://github.com/websecurify/babel-plugin-import-css-to-jss"
+  },
   "author": "Websecurfiy <contact@websecurify.com>",
   "license": "MIT",
   "dependencies": {
