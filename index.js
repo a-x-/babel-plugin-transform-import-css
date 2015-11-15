@@ -1,4 +1,5 @@
 var fs = require('fs')
+var less = require('less')
 var path = require('path')
 var cssToJss = require('jss-cli/lib/cssToJss')
 var requireResolve = require('require-resolve')
@@ -28,6 +29,26 @@ function toTree(t, obj) {
     return t.objectExpression(props)
 }
 
+function lessToCss(file) {
+    var css = ''
+
+    var options = {
+        paths: [ path.dirname(file) ],
+        filename: path.basename(file),
+        sync: true
+    }
+
+    less.render(fs.readFileSync(file).toString(), options, function (err, result) {
+        if (err) {
+            throw err
+        }
+
+        css = result.css
+    })
+
+    return css
+}
+
 module.exports = function (babel) {
     var t = babel.types
 
@@ -47,6 +68,17 @@ module.exports = function (babel) {
                         var mod = requireResolve(node.source.value, path.resolve(file.file.opts.filename))
                         var id = t.identifier(node.specifiers[0].local.name)
                         var value = toTree(t, cssToJss(fs.readFileSync(mod.src).toString())) // due to bugs we cannot use t.valueToNode
+
+                        decl.replaceWith(t.variableDeclaration('var', [t.variableDeclarator(id, value)]))
+                    } else
+                    if (node.source.value.endsWith('.less')) {
+                        // everything you see here is a complete guesswork but
+                        // that is what you get without proper documentation -
+                        // #babel6
+
+                        var mod = requireResolve(node.source.value, path.resolve(file.file.opts.filename))
+                        var id = t.identifier(node.specifiers[0].local.name)
+                        var value = toTree(t, cssToJss(lessToCss(mod.src))) // due to bugs we cannot use t.valueToNode
 
                         decl.replaceWith(t.variableDeclaration('var', [t.variableDeclarator(id, value)]))
                     }
