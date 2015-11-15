@@ -1,4 +1,4 @@
-This is a simple babel plugin to inline CSS styles into JS vis JSS.
+This is a simple babel plugin to inline CSS and LESS styles into JS vis JSS.
 
 This plugin is very much experimental due to use of the Babel6 API - largely undocumented. Contributions are welcome.
 
@@ -18,7 +18,7 @@ will be roughtly translated to:
 
 ```javascript
 var styles = {
-    // the css file converted to JSS 
+    // the css file converted to JSS
 }
 ```
 
