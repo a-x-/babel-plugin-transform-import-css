@@ -1,6 +1,8 @@
 var fs = require('fs')
 var less = require('less')
 var path = require('path')
+var sass = require('node-sass')
+var deasync = require('deasync')
 var cssToJss = require('jss-cli/lib/cssToJss')
 var requireResolve = require('require-resolve')
 
@@ -30,23 +32,21 @@ function toTree(t, obj) {
 }
 
 function lessToCss(file) {
-    var css = ''
-
     var options = {
         paths: [ path.dirname(file) ],
-        filename: path.basename(file),
-        sync: true
+        filename: path.basename(file)
     }
 
-    less.render(fs.readFileSync(file).toString(), options, function (err, result) {
-        if (err) {
-            throw err
-        }
+    return deasync(less.render.bind(less))(fs.readFileSync(file).toString(), options).css.toString()
+}
 
-        css = result.css
-    })
+function sassToCss(file) {
+    var options = {
+        file: file,
+        includePaths: [ path.dirname(file) ]
+    }
 
-    return css
+    return deasync(sass.render.bind(sass))(options).css.toString()
 }
 
 module.exports = function (babel) {
@@ -79,6 +79,17 @@ module.exports = function (babel) {
                         var mod = requireResolve(node.source.value, path.resolve(file.file.opts.filename))
                         var id = t.identifier(node.specifiers[0].local.name)
                         var value = toTree(t, cssToJss(lessToCss(mod.src))) // due to bugs we cannot use t.valueToNode
+
+                        decl.replaceWith(t.variableDeclaration('var', [t.variableDeclarator(id, value)]))
+                    } else
+                    if (node.source.value.endsWith('.sass') || node.source.value.endsWith('.scss')) {
+                        // everything you see here is a complete guesswork but
+                        // that is what you get without proper documentation -
+                        // #babel6
+
+                        var mod = requireResolve(node.source.value, path.resolve(file.file.opts.filename))
+                        var id = t.identifier(node.specifiers[0].local.name)
+                        var value = toTree(t, cssToJss(sassToCss(mod.src))) // due to bugs we cannot use t.valueToNode
 
                         decl.replaceWith(t.variableDeclaration('var', [t.variableDeclarator(id, value)]))
                     }
