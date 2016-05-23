@@ -16,12 +16,29 @@ function toTree(t, obj) {
             val = t.nullLiteral()
         } else {
             var type = typeof(val)
+            
+            if (type ===  'undefined') {
+                continue
+            }
 
-            switch(typeof(val)) {
-                case 'string': val = t.stringLiteral(val); break;
-                case 'number': val = t.numericLiteral(val); break;
-                case 'boolean': val = t.booleanLiteral(val); break;
-                default: val = toTree(t, val)
+            switch(type) {
+                case 'string':
+                    val = t.stringLiteral(val)
+                    
+                    break
+                    
+                case 'number':
+                    val = t.numericLiteral(val)
+                    
+                    break
+                    
+                case 'boolean':
+                    val = t.booleanLiteral(val)
+                    
+                    break
+                    
+                default:
+                    val = toTree(t, val)
             }
         }
 
