@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-examples": "babel examples/ -d examples-dist/ --plugins ./index.js"
+    "build-examples": "babel examples/ -d examples-dist/ --plugins ../index.js"
   },
   "keywords": [
     "babel",
@@ -28,5 +28,8 @@
     "less": "^2.5.3",
     "node-sass": "^3.4.2",
     "require-resolve": "0.0.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0"
   }
 }
