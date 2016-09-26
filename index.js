@@ -84,7 +84,7 @@ module.exports = function (babel) {
 
                         var mod = requireResolve(node.source.value, path.resolve(file.file.opts.filename))
                         var id = t.identifier(node.specifiers[0].local.name)
-                        var value = toTree(t, cssToJss(fs.readFileSync(mod.src).toString())) // due to bugs we cannot use t.valueToNode
+                        var value = toTree(t, cssToJss({code: fs.readFileSync(mod.src).toString()})) // due to bugs we cannot use t.valueToNode
 
                         decl.replaceWith(t.variableDeclaration('var', [t.variableDeclarator(id, value)]))
                     } else
@@ -95,7 +95,7 @@ module.exports = function (babel) {
 
                         var mod = requireResolve(node.source.value, path.resolve(file.file.opts.filename))
                         var id = t.identifier(node.specifiers[0].local.name)
-                        var value = toTree(t, cssToJss(lessToCss(mod.src))) // due to bugs we cannot use t.valueToNode
+                        var value = toTree(t, cssToJss({code: lessToCss(mod.src)})) // due to bugs we cannot use t.valueToNode
 
                         decl.replaceWith(t.variableDeclaration('var', [t.variableDeclarator(id, value)]))
                     } else
@@ -106,7 +106,7 @@ module.exports = function (babel) {
 
                         var mod = requireResolve(node.source.value, path.resolve(file.file.opts.filename))
                         var id = t.identifier(node.specifiers[0].local.name)
-                        var value = toTree(t, cssToJss(sassToCss(mod.src))) // due to bugs we cannot use t.valueToNode
+                        var value = toTree(t, cssToJss({code: sassToCss(mod.src)})) // due to bugs we cannot use t.valueToNode
 
                         decl.replaceWith(t.variableDeclaration('var', [t.variableDeclarator(id, value)]))
                     }
