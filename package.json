@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-import-css-to-jss",
-  "version": "1.1.0",
+  "version": "1.0.3",
   "description": "Babel plugin to convert css imports into jss objects",
   "main": "index.js",
   "scripts": {
