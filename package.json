@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "deasync": "^0.1.4",
-    "jss-cli": "^2.0.0",
+    "jss-cli": "^3.0.1",
     "less": "^2.5.3",
     "node-sass": "^3.4.2",
     "require-resolve": "0.0.2"
