@@ -10,10 +10,7 @@
   "keywords": [
     "babel",
     "jss",
-    "css",
-    "less",
-    "sass",
-    "ssss"
+    "css"
   ],
   "repository": {
     "type": "git",
@@ -23,10 +20,7 @@
   "author": "Websecurfiy <contact@websecurify.com>",
   "license": "MIT",
   "dependencies": {
-    "deasync": "^0.1.4",
     "jss-cli": "^3.0.1",
-    "less": "^2.5.3",
-    "node-sass": "^3.4.2",
     "require-resolve": "0.0.2"
   },
   "devDependencies": {
