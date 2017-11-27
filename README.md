@@ -1,4 +1,4 @@
-This is a simple babel plugin to inline CSS and LESS styles into JS vis JSS.
+This is a simple babel plugin to inline css into js vis jss.
 
 This plugin is very much experimental due to use of the Babel6 API - largely undocumented. Contributions are welcome.
 
@@ -24,4 +24,4 @@ var styles = {
 
 # Use Cases
 
-The only use case of this plugin is to be able to bundle CSS styles with your JS components. It is good for portability.
+The only use case of this plugin is to be able to bundle css styles with your js components. It is good for portability.
