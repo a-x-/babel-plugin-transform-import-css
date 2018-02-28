@@ -1,74 +1,69 @@
-var fs = require('fs')
-var path = require('path')
-var cssToJss = require('jss-cli/lib/cssToJss')
-var requireResolve = require('require-resolve')
+// node >= 8
+// babel == 6 plugin
 
-function toTree(t, obj) {
-    var props = []
+const t = require('babel-types')
+const { readFileSync, writeFileSync } = require('fs')
+const { promisify } = require('util')
+const path = require('path')
+const requireResolve = require('require-resolve')
 
-    for (var key in obj) {
-        var val = obj[key]
+const CssImport = require('./css-import-visitor')
+const { jsToAst, jsStringToAst, jssPathname, constAst } = require('./helpers')
 
-        if (val === null) {
-            val = t.nullLiteral()
-        } else {
-            var type = typeof(val)
+// TODO: import css-modules tooling (css-modules generateScopedName)
+const cssModules = {
+  /**
+   * @param {Sting} css
+   * @returns {String} scopedCss
+   */
+  process: (css) => { debugger; throw new Error 'impl' },
 
-            if (type ===  'undefined') {
-                continue
-            }
-
-            switch(type) {
-                case 'string':
-                    val = t.stringLiteral(val)
-
-                    break
-
-                case 'number':
-                    val = t.numericLiteral(val)
-
-                    break
-
-                case 'boolean':
-                    val = t.booleanLiteral(val)
-
-                    break
-
-                default:
-                    val = toTree(t, val)
-            }
-        }
-
-        props.push(t.objectProperty(t.stringLiteral(key), val))
-    }
-
-    return t.objectExpression(props)
+  /**
+   * @param {String} css
+   * @returns {Object} { [sourceSelector]: scopedSelector,,, }
+   */
+  getClasses: (css) => { debugger; throw new Error 'impl' }
 }
 
-module.exports = function (babel) {
-    var t = babel.types
+/* main() { */
 
-    return {
-        visitor: {
-            ImportDeclaration: {
-                // pretty much guessing what input paramters are called
+module.exports = function(babel) {
+  return {
+    visitor: {
+      ImportDeclaration: {
+        exit: CssImport(({ src, css, importNode, replaceWith, utils }) => {
+          writeJssFile(utils, css, src)
 
-                exit: function(decl, file) {
-                    var node = decl.node
-
-                    if (node.source.value.endsWith('.css')) {
-                        // everything you see here is a complete guesswork but
-                        // that is what you get without proper documentation -
-                        // #babel6
-
-                        var mod = requireResolve(node.source.value, path.resolve(file.file.opts.filename))
-                        var id = t.identifier(node.specifiers[0].local.name)
-                        var value = toTree(t, cssToJss({code: fs.readFileSync(mod.src).toString()})) // due to bugs we cannot use t.valueToNode
-
-                        decl.replaceWith(t.variableDeclaration('var', [t.variableDeclarator(id, value)]))
-                    }
-                }
-            }
-        }
+          // TODO: check replaceWith API
+          replaceWith([
+            classesMapConstAst(utils, { css, importNode }),
+            jssCallAst(utils, { src }),
+          ])
+        })
+      }
     }
+  }
+}
+
+function writeJssFile(utils, css, fromSrc) {
+  const jssObject = utils.getJssObject(css)
+  promisify(writeFile)(jssPathname(fromSrc), jssObject, 'utf8').catch(console.error)
+}
+
+function classesMapConstAst(utils, { css, importNode }) {
+  // due to bugs we cannot use t.valueToNode
+  // TODO: Check t.valueToNode
+  const classesMap = cssModules.getClasses(css)
+
+  // XXX: class-names API extending with jssObject (css-in-js object generated on source css)
+  classesMap.jssObject = utils.getJssObject(css)
+  const classesMapAst = jsToAst(classesMap)
+  const classesMapVarNameAst = t.identifier(importNode.specifiers[0].local.name)
+
+  return constAst(classesMapVarNameAst, classesMapAst)
+}
+
+function jssCallAst(utils, { src }) {
+  // TODO: create common jssEmptyPreset
+  jsStringToAst(`require('jss').create(jssEmptyPreset()).createStyleSheet(require('${ jssPathname(src) }'))`)
 }

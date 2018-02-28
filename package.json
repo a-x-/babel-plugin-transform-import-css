@@ -23,7 +23,15 @@
     "jss-cli": "^3.0.1",
     "require-resolve": "0.0.2"
   },
+  "peerDependencies": {
+    "babel-generator": "6.x",
+    "babel-template": "6.x",
+    "babel-types": "6.x"
+  },
   "devDependencies": {
-    "babel-cli": "^6.9.0"
+    "babel-cli": "^6.9.0",
+    "babel-generator": "^6.26.1",
+    "babel-template": "^6.26.0",
+    "babel-types": "^6.26.0"
   }
 }
