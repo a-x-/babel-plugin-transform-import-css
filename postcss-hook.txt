@@ -1,0 +1,142 @@
+const genericNames = require('generic-names')
+const globToRegex = require('glob-to-regexp')
+const validate = require('./validate')
+
+const postcss = require('postcss')
+const Values = require('postcss-modules-values')
+const LocalByDefault = require('postcss-icss-selectors')
+const ExtractImports = require('postcss-modules-extract-imports')
+const Scope = require('postcss-modules-scope')
+const ResolveImports = require('postcss-modules-resolve-imports')
+
+const PWD = process.cwd()
+
+// TODO: re-check args
+module.exports = ({
+  camelCase,
+  devMode,
+  extensions = '.css',
+  ignore,
+  preprocessCss = css => css,
+  processCss,
+  processorOpts,
+  append = [],
+  prepend = [],
+  createImportedName,
+  generateScopedName,
+  hashPrefix,
+  mode,
+  resolve: resolveOpts,
+  use,
+  rootDir: PWD,
+}) => {
+  const exts = [].concat(extensions)
+  const tokensByFile = {}
+
+  const debugMode = process.env.NODE_ENV === 'development'
+
+  const scopedName = normalizeScopedName(generateScopedName)
+
+  const plugins = use || [
+    ...prepend,
+    Values,
+    new LocalByDefault({mode, generateScopedName: scopedName}),
+    new ExtractImports({createImportedName}),
+    new Scope({generateScopedName: scopedName}),
+    new ResolveImports({resolve: {extensions: exts, ...resolveOpts}}),
+    ...append,
+  ]
+
+  // https://github.com/postcss/postcss#options
+  const runner = postcss(plugins)
+
+  const isException = buildExceptionChecker(ignore)
+
+  // @todo add possibility to specify particular config for each extension
+  exts.forEach(extension => attachHook(hook, extension, isException))
+
+  /**
+   * @param {function} compile
+   * @param {string}   extension
+   * @param {function} isException
+   */
+  function attachHook(compile, extension, isException) {
+    const existingHook = require.extensions[extension]
+
+    require.extensions[extension] = function cssModulesHook(m, filename) {
+      if (isException(filename)) {
+        existingHook(m, filename)
+      } else {
+        const tokens = compile(filename)
+        return m._compile(`module.exports = ${JSON.stringify(tokens)}`, filename)
+      }
+    }
+  }
+
+  const hook = filename => {
+    const tokens = fetch(filename, filename)
+    return camelCase ? transformTokens(tokens, camelCase) : tokens
+  }
+
+  /**
+   * @todo   think about replacing sequential fetch function calls with requires calls
+   * @param  {string} _to
+   * @param  {string} from
+   * @return {object}
+   */
+  function fetch(_to, from) {
+    // getting absolute path to the processing file
+    const filename = /[^\\/?%*:|"<>.]/i.test(_to[0])
+      ? require.resolve(_to)
+      : resolve(dirname(from), _to)
+
+    // checking cache
+    let tokens = tokensByFile[filename]
+    if (tokens) return tokens
+
+    const source = preprocessCss(readFileSync(filename, 'utf8'), filename)
+    // https://github.com/postcss/postcss/blob/master/docs/api.md#processorprocesscss-opts
+    const lazyResult = runner.process(source, { ...processorOpts, {from: filename}})
+
+    // https://github.com/postcss/postcss/blob/master/docs/api.md#lazywarnings
+    lazyResult.warnings().forEach(message => console.warn(message.text))
+
+    tokens = lazyResult.root.exports || {}
+
+    // updating cache
+    if (!debugMode) tokensByFile[filename] = tokens
+
+    // clearing cache in development mode
+    if (debugMode) delete require.cache[filename]
+
+    // if (processCss)
+    //   processCss(lazyResult.css, filename)
+
+    return tokens
+  }
+}
+
+function normalizeScopedName(generateScopedName) {
+  if (!generateScopedName) {
+    return (local, filename) => Scope.generateScopedName(local, relative(PWD, filename))
+  }
+
+  if (typeof generateScopedName === 'function') return generateScopedName
+
+  // for example '[name]__[local]___[hash:base64:5]'
+  return genericNames(generateScopedName, {context: PWD, hashPrefix})
+}
+
+/**
+ * @param  {function|regex|string} ignore glob, regex or function
+ * @return {function}
+ */
+function buildExceptionChecker(ignore) {
+  if (ignore instanceof RegExp) {
+    return filepath => ignore.test(filepath)
+  }
+  if (typeof ignore === 'string'){
+    return filepath => globToRegex(ignore).test(filepath)
+  }
+  return ignore || x => -x
+}

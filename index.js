@@ -1,69 +1,76 @@
 // node >= 8
 // babel == 6 plugin
 
-const t = require('babel-types')
-const { readFileSync, writeFileSync } = require('fs')
-const { promisify } = require('util')
-const path = require('path')
-const requireResolve = require('require-resolve')
+const t = require('babel-types');
+// const { writeFile } = require('fs');
+// const { promisify } = require('util');
+// const cssToJss = require('jss-cli/lib/cssToJss');
 
-const CssImport = require('./css-import-visitor')
-const { jsToAst, jsStringToAst, jssPathname, constAst } = require('./helpers')
-
-// TODO: import css-modules tooling (css-modules generateScopedName)
-const cssModules = {
-  /**
-   * @param {Sting} css
-   * @returns {String} scopedCss
-   */
-  process: (css) => { debugger; throw new Error 'impl' },
-
-  /**
-   * @param {String} css
-   * @returns {Object} { [sourceSelector]: scopedSelector,,, }
-   */
-  getClasses: (css) => { debugger; throw new Error 'impl' }
-}
+const CssImport = require('./css-import-visitor');
+const {
+  jsToAst, jsStringToAst, constAst, postcss,
+  // retreiveOptions, jssPathname,
+} = require('./helpers');
 
 /* main() { */
 
-module.exports = function(babel) {
-  return {
+module.exports = function(/*babel*/) {
+  // is plugin initialized?
+  // const initialized = false;
+
+  const pluginApi = {
+    manipulateOptions (options) {
+      // if (initialized) return options;
+      return options;
+
+      // e.g. { generateScopedName }
+      // const currentConfig = { ...defaultOptions, ...retreiveOptions(options, pluginApi) };
+
+      // TODO:
+      // require('./postcss-hook')(currentConfig)
+      // const initialized = true;
+    },
+
     visitor: {
       ImportDeclaration: {
-        exit: CssImport(({ src, css, importNode, replaceWith, utils }) => {
-          writeJssFile(utils, css, src)
+        exit: CssImport(({ src, css, options, importNode, babelData }) => {
+          const postcssOptions = { generateScopedName: options.generateScopedName };
+          const { code, classesMap } = postcss.process(css, src, postcssOptions);
 
-          // TODO: check replaceWith API
-          replaceWith([
-            classesMapConstAst(utils, { css, importNode }),
-            jssCallAst(utils, { src }),
-          ])
-        })
-      }
-    }
-  }
-}
+          // const jssObject = cssToJss({ code });
+          // writeJssFile(jssObject, src);
 
-function writeJssFile(utils, css, fromSrc) {
-  const jssObject = utils.getJssObject(css)
-  promisify(writeFile)(jssPathname(fromSrc), jssObject, 'utf8').catch(console.error)
-}
+          babelData.replaceWithMultiple([
+            classesMapConstAst({ classesMap, importNode }),
+            putStyleIntoHeadAst({ code }),
+          ]);
+        }),
+      },
+    },
+  };
+  return pluginApi;
+};
 
-function classesMapConstAst(utils, { css, importNode }) {
-  // due to bugs we cannot use t.valueToNode
-  // TODO: Check t.valueToNode
-  const classesMap = cssModules.getClasses(css)
+/* } */
 
+// function writeJssFile(jssObject, fromSrc) {
+//   promisify(writeFile)(jssPathname(fromSrc), `module.exports = ${ JSON.stringify(jssObject, null, 2) }`, 'utf8').catch(console.error);
+// }
+
+function classesMapConstAst({ importNode, classesMap }) {
   // XXX: class-names API extending with jssObject (css-in-js object generated on source css)
-  classesMap.jssObject = utils.getJssObject(css)
-  const classesMapAst = jsToAst(classesMap)
-  const classesMapVarNameAst = t.identifier(importNode.specifiers[0].local.name)
+  const classesMapAst = jsToAst(classesMap);
+  const classesMapVarNameAst = t.identifier(importNode.local.name);
 
-  return constAst(classesMapVarNameAst, classesMapAst)
+  return constAst(classesMapVarNameAst, classesMapAst);
 }
 
-function jssCallAst(utils, { src }) {
-  // TODO: create common jssEmptyPreset
-  jsStringToAst(`require('jss').create(jssEmptyPreset()).createStyleSheet(require('${ jssPathname(src) }'))`)
+// function jssCallAst({ src }) {
+//   // TODO: create common jssEmptyPreset
+//   // TODO: target path (not src) OR do not write to separate jss.js file
+//   return jsStringToAst(`require('jss').create(jssEmptyPreset()).createStyleSheet(require('${ jssPathname(src) }'))`);
+// }
+
+function putStyleIntoHeadAst({ code }) {
+  return jsStringToAst(`require('load-styles')(\`${ code }\`)`);
 }

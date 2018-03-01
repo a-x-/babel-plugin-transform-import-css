@@ -1,30 +1,43 @@
-const {
-  cssToJss,
-} = require('./helpers')
+const { readFileSync } = require('fs');
+const path = require('path');
+const requireResolve = require('require-resolve');
+
+const { defaultOptions } = require('./consts');
 
 /**
  * Visitor for `import '*.css'` babel AST-nodes
  */
 function CssImport(cb) {
-  return ({ node, replaceWith }, { file }) => {
-    if (!node.source.value.endsWith('.css')) return
+  return (babelData, { file, opts = {} }) => {
+    const { node } = babelData;
+    errorBoundary(node.source.value, () => {
+      if (!node.source.value.endsWith('.css')) return;
 
-    const { src } = requireResolve(node.source.value, path.resolve(file.opts.filename))
-    const cssContent = readFileSync(src).toString()
+      const { src } = requireResolve(node.source.value, path.resolve(file.opts.filename));
+      const css = readFileSync(src, 'utf8');
 
-    console.log('src', src, 'node.specifiers', node.specifiers, 'css', cssContent)
-    debugger
+      // TODO: load postcss options and plugins
+      const options = { ...defaultOptions, ...opts };
 
-    const cache = {} // Cache for every single node
-    const utils = { // memoized css import node utils
-      getJssObject: (css) => {
-        if (cache.jssObject) return cache.jssObject;
-        return cache.jssObject = cssToJss({ code: cssModules.process(css) })
-      }
-    }
-
-    cb({ src, css: cssContent, replaceWith, importNode: node, utils })
-  }
+      cb({
+        babelData,
+        src,
+        css,
+        importNode: { ...node, ...node.specifiers[0] },
+        options,
+      });
+    });
+  };
 }
 
-module.exports = CssImport
+module.exports = CssImport;
+
+function errorBoundary(cssFile, cb) {
+  try {
+    cb();
+  } catch (e) {
+    debugger; // eslint-disable-line no-debugger
+    console.error(new Error(`import-css-to-jss-calls: ${ cssFile }: ${ e.message }`));
+    throw e;
+  }
+}

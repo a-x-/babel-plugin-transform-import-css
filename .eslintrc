@@ -1,0 +1,115 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "globals": {
+    "test": true,
+    "expect": true,
+    "describe": true
+  },
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "node": true,
+    "es6": true,
+    "jest": true
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "import",
+    "immutable"
+  ],
+  "rules": {
+    "no-alert": "warn",
+    "no-caller": "error",
+    "no-extend-native": "error",
+    "no-debugger": ["warn"],
+    "eqeqeq": ["warn", "always"],
+    "no-console": ["warn", {
+      "allow": ["warn", "error", "info"]
+    }],
+    "indent": ["warn", 2],
+    "no-unused-vars": ["warn", {
+      "ignoreRestSiblings": true
+    }],
+    "no-extra-semi": ["warn"],
+    "linebreak-style": ["warn", "unix"],
+    "quotes": ["warn", "single"],
+    "semi": ["warn", "always"],
+    "object-curly-spacing": ["warn", "always"],
+    "comma-dangle": ["warn", {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "always-multiline",
+      "exports": "always-multiline",
+      "functions": "never"
+    }],
+    "comma-spacing": ["warn"],
+    "strict": ["error", "global"],
+    "curly": ["warn", "multi-line"],
+    "template-curly-spacing": ["warn", "always"],
+    "camelcase": ["warn"],
+    "eol-last": ["warn", "always"],
+    "no-trailing-spaces": "warn",
+    "no-var": "error",
+    "prefer-const": "warn",
+    "prefer-destructuring": "warn",
+    "prefer-rest-params": "warn",
+    "prefer-spread": "warn",
+    "no-param-reassign": "error",
+    "no-else-return": "warn",
+
+    "import/first": "error",
+    "import/no-amd": "error",
+    "import/no-webpack-loader-syntax": "error",
+
+    "react/prop-types": ["warn", {
+      "ignore": ["children", "className", "style", "ref"]
+    }],
+    "react/jsx-no-comment-textnodes": "warn",
+    "react/jsx-no-duplicate-props": ["warn", { "ignoreCase": true }],
+    "react/jsx-no-target-blank": "warn",
+    "react/jsx-no-undef": "error",
+    "react/jsx-pascal-case": ["warn", {
+      "allowAllCaps": true,
+      "ignore": []
+    }],
+    "react/jsx-uses-react": "warn",
+    "react/jsx-uses-vars": "warn",
+    "react/jsx-curly-spacing": ["warn", {
+      "when": "always",
+      "children": true,
+      "spacing": {
+        "objectLiterals": "never"
+      }
+    }],
+    "jsx-quotes": ["warn", "prefer-double"],
+    "react/no-danger-with-children": "warn",
+    "react/no-deprecated": "warn",
+    "react/no-direct-mutation-state": "warn",
+    "react/no-is-mounted": "warn",
+    "react/react-in-jsx-scope": "error",
+    "react/require-render-return": "error",
+    "react/style-prop-object": "warn",
+    "react/display-name": "warn",
+    "react/no-typos": "warn",
+    "react/no-unused-prop-types": "warn",
+    "react/no-redundant-should-component-update": "warn",
+    "react/no-did-update-set-state": "warn",
+    "react/no-will-update-set-state": "warn",
+    "react/no-did-mount-set-state": "warn",
+
+    "immutable/no-let": "warn"
+  }
+}
