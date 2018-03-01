@@ -1,7 +1,7 @@
 {
   "name": "babel-plugin-transform-import-css",
   "version": "0.1.1",
-  "description": "Babel plugin to convert css imports into jss objects",
+  "description": "Injects imported styles (css-modules) into js",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,8 +9,8 @@
   },
   "keywords": [
     "babel",
-    "jss",
-    "css"
+    "css",
+    "css-modules"
   ],
   "repository": {
     "type": "git",
