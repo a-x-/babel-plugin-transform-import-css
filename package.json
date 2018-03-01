@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build-examples": "babel examples/ -d examples-dist/ --plugins ../index.js"
+    "build-examples": "babel examples/ -d examples-dist/ --plugins ../index.js",
+    "postversion": "git push && git push --tags && npm publish"
   },
   "keywords": [
     "babel",
