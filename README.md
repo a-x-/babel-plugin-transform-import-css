@@ -18,7 +18,7 @@ Every js file that has a statement such as:
 import classes from './Component.css'
 ```
 
-will be rouroughly translated to:
+will be roughly translated to:
 
 ```js
 var classes = {
