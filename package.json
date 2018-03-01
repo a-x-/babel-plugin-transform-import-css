@@ -1,6 +1,6 @@
 {
-  "name": "babel-plugin-import-css-to-jss",
-  "version": "2.0.0",
+  "name": "babel-plugin-transform-import-css",
+  "version": "0.1.0",
   "description": "Babel plugin to convert css imports into jss objects",
   "main": "index.js",
   "scripts": {
@@ -14,10 +14,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/websecurify/babel-plugin-import-css-to-jss.git",
-    "web": "https://github.com/websecurify/babel-plugin-import-css-to-jss"
+    "url": "https://github.com/a-x-/babel-plugin-transform-import-css.git",
+    "web": "https://github.com/a-x-/babel-plugin-transform-import-css"
   },
-  "author": "Websecurfiy <contact@websecurify.com>",
+  "author": "Alex Mextner <invntrm@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "load-styles": "^2.0.0",
