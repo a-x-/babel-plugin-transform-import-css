@@ -15,7 +15,7 @@ The following command will convert everything in the `src` folder to `lib` using
 Every js file that has a statement such as:
 
 ```js
-import classes from './styles.css'
+import classes from './Component.css'
 ```
 
 will be rouroughly translated to:
