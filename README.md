@@ -55,3 +55,11 @@ require('load-styles')('.root{color:red}') // puts styles into head
 
 Bundling the css with js/react components.
 It is good for portability.
+
+# Alternatives
+- [babel-plugin-react-css-modules](https://github.com/gajus/babel-plugin-react-css-modules)
+  - adds custom syntax
+  - react specific
+  - it isn't `export { classes }` friendly
+- [babel-plugin-import-css-to-jss](https://github.com/websecurify/babel-plugin-import-css-to-jss)
+  - breaks css-modules api (`import jssObject from './style.css'`)
