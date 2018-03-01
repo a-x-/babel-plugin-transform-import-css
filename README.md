@@ -1,4 +1,4 @@
-Babel plugin that injects imported styles (css-modules) into js.
+Injects imported styles (css-modules) into js.
 Plugin respects webpack css-modules API and postcss config.
 
 # Requirements
