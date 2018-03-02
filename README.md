@@ -1,4 +1,5 @@
-Injects imported styles (css-modules) into js.
+Injects class map imported from css-modules into js.
+
 Plugin respects webpack css-modules API and postcss config.
 
 # Requirements
