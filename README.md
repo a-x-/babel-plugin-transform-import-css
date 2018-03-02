@@ -7,6 +7,32 @@ babel == 6, node >= 8
 
 babel and postcss configs for best results
 
+# Installation & configuration
+```sh
+npm add -SD babel-plugin-transform-import-css
+npm add load-styles # puts styles into the head
+```
+
+**.babelrc** example:
+```json5
+{
+  "sourceMaps": "inline",
+  "presets": [
+    ["env", {
+      "targets": { "browsers": ["last 2 Chrome versions", "last 1 Safari version"] },
+      "useBuiltIns": false, "modules": false
+    }],
+    "stage-1", "react"
+  ],
+  "plugins": [
+    ["transform-import-css", {
+      "generateScopedName": "lib-[folder]-[name]-[local]-[hash:base64:4]"
+    }]
+  ]
+}
+```
+
+
 # Usage
 
 The following command will convert everything in the `src` folder to `lib` using babel and our plugin.
@@ -26,31 +52,11 @@ var classes = {
     root: 'lib-foo-root-SFs0',
     // ...
 }
-require('load-styles')('.root{color:red}') // puts styles into head
+require('load-styles')('.root{color:red}') // puts styles into the head
 ```
 
 # Api
 - `generateScopedName` *optional* css-modules scope template
-
-### Example:
-**.babelrc**:
-```json5
-{
-  "sourceMaps": "inline",
-  "presets": [
-    ["env", {
-      "targets": { "browsers": ["last 2 Chrome versions", "last 1 Safari version"] },
-      "useBuiltIns": false, "modules": false
-    }],
-    "stage-1", "react"
-  ],
-  "plugins": [
-    ["transform-import-css", {
-      "generateScopedName": "lib-[folder]-[name]-[local]-[hash:base64:4]"
-    }]
-  ]
-}
-```
 
 # Use Cases
 
