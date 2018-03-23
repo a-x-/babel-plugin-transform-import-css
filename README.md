@@ -70,3 +70,6 @@ It is good for portability.
   - it isn't `export { classes }` friendly
 - [babel-plugin-import-css-to-jss](https://github.com/websecurify/babel-plugin-import-css-to-jss)
   - breaks css-modules api (`import jssObject from './style.css'`)
+- [babel-plugin-css-modules-transform](https://github.com/michalkvasnicak/babel-plugin-css-modules-transform)
+  - genarates classes hash-map too
+  - cannot bundle css-modules in js
