@@ -73,3 +73,9 @@ It is good for portability.
 - [babel-plugin-css-modules-transform](https://github.com/michalkvasnicak/babel-plugin-css-modules-transform)
   - genarates classes hash-map too
   - cannot bundle css-modules in js
+
+
+----
+
+# Sponsored with ❤️ by <a href="https://rocketbank.ru">RocketBank</a> <img src="https://user-images.githubusercontent.com/6201068/41535008-57abc544-7309-11e8-9259-4b38bc1e7370.png" width="24"/>
+Russian Fintech startup
