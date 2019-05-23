@@ -1,6 +1,6 @@
 const t = require('@babel/types');
 
-const babelTemplate = require('@babel/template');
+const babelTemplate = require('@babel/template').default;
 
 const postcss = require('./postcss');
 

@@ -51,6 +51,8 @@ require('load-styles')('.root{color:red}; ...some css...') // puts styles into t
 - `configPath` — postcss config path. **Default**: _auto detect_
 - `ext` — postcss files' extension. Typical use: `ext: '.pcss'`. **Default**: `'.css'`
 
+**Note**. Plugin rely on some @babel/ peerDependencies, that are typically included in your project by @babel/core self.
+
 # Use Cases
 
 Bundling the css with npm packed library of js/react components.

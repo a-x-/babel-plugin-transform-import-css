@@ -31,13 +31,11 @@
     "require-resolve": "0.0.2"
   },
   "peerDependencies": {
-    "@babel/generator": "7.x",
     "@babel/template": "7.x",
     "@babel/types": "7.x",
     "postcss": "7.x.x"
   },
   "devDependencies": {
-    "@babel/generator": "^7.4.4",
     "@babel/template": "^7.4.4",
     "@babel/types": "^7.4.4",
     "eslint-plugin-immutable": "^1.0.0",
