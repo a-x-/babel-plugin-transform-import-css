@@ -18,7 +18,6 @@ module.exports = {
   jsToAst,
   jsStringToAst,
   babelTemplate,
-  jssPathname,
   constAst,
   postcss,
 };

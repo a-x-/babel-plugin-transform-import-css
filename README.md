@@ -61,6 +61,9 @@ It is good for portability.
 - [x] `configPath` and `ext` options
 - [ ] Compatibility with mini-css-extract-plugin and extract-text-webpack-plugin.
   babel-plugin-transform-import-css should skip `require('load-styles')(css)` inserting in that cases.
+- [ ] Support postcss configs in package.json
+- [ ] More flexible postcss config loader.
+  (asynchronous `postcss-load-config` lib can't be used due to synchronous nature of the babel).
 
 # Alternatives
 - [babel-plugin-react-css-modules](https://github.com/gajus/babel-plugin-react-css-modules)

@@ -23,6 +23,7 @@
   "dependencies": {
     "load-styles": "^2.0.0",
     "postcss-icss-selectors": "^2.0.3",
+    "postcss-load-config": "^2.0.0",
     "postcss-modules-extract-imports": "^2.0.0",
     "postcss-modules-resolve-imports": "^1.3.0",
     "postcss-modules-scope": "^2.1.0",

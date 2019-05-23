@@ -10,6 +10,8 @@ const LocalByDefault = require('postcss-icss-selectors');
 const ExtractImports = require('postcss-modules-extract-imports');
 const Scope = require('postcss-modules-scope');
 const ResolveImports = require('postcss-modules-resolve-imports');
+const getPostcssrcPlugins = require('postcss-load-config/src/plugins');
+const getPostcssrcOptions = require('postcss-load-config/src/options');
 
 const PWD = process.cwd();
 
@@ -62,37 +64,22 @@ function normalizeScopedName(generateScopedName, hashPrefix) {
   return genericNames(generateScopedName, { context: PWD, hashPrefix });
 }
 
-// function loadConfig() {
-//   if (fs.existsSync(path.resolve(PWD, 'postcss.config.js'))) {
-//     return require(path.resolve(PWD, 'postcss.config.js'));
-//   }
+function loadConfig(configPath) {
+  const { conf, confPath } = loadRawConf(configPath) || {};
+  if (!conf) return {};
+  return { ...conf, plugins: getPostcssrcPlugins(conf, confPath), options: getPostcssrcOptions(conf, confPath) };
+}
 
-//   // TODO: custom config path
-//   if (fs.existsSync(path.resolve(PWD, '.postcssrc'))) {
-//     return JSON.parse(fs.readFileSync(path.resolve(PWD, '.postcssrc'), 'utf8'));
-//   }
-
-//   return {};
-// }
-
-function loadConfig (configPath) {
-  const rc = {
-    path: path.dirname(file),
-    ctx: {
-      file: {
-        extname: path.extname(file),
-        dirname: path.dirname(file),
-        basename: path.basename(file)
-      },
-      options: {}
-    }
+function loadRawConf(configPath) {
+  const jsConfPath = /\.js$/.test(configPath) ? configPath : path.resolve(PWD, 'postcss.config.js');
+  if (fs.existsSync(jsConfPath)) {
+    const conf = require(jsConfPath);
+    return { conf, confPath: jsConfPath };
   }
 
-  if (options.config) {
-    if (options.config.path) {
-      rc.path = path.resolve(options.config.path)
-    }
+  const jsonConfPath = /rc$|\.json$/.test(configPath) ? configPath : path.resolve(PWD, '.postcssrc')
+  if (fs.existsSync(jsonConfPath)) {
+    const conf = JSON.parse(fs.readFileSync(jsonConfPath, 'utf8'));
+    return { conf, confPath: jsonConfPath };
   }
-
-  return postcssrc(rc.ctx, rc.path)
 }
