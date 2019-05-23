@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-transform-import-css",
-  "version": "1.0.0-alpha.7",
+  "version": "1.0.0-alpha.10",
   "description": "Injects imported styles (css-modules) into js",
   "main": "index.js",
   "scripts": {
