@@ -1,10 +1,7 @@
 // node >= 8
-// babel == 6 plugin
+// babel == 7
 
-const t = require('babel-types');
-// const { writeFile } = require('fs');
-// const { promisify } = require('util');
-// const cssToJss = require('jss-cli/lib/cssToJss');
+const t = require('@babel/types');
 
 const CssImport = require('./css-import-visitor');
 const {

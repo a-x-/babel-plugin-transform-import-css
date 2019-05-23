@@ -30,18 +30,15 @@
     "require-resolve": "0.0.2"
   },
   "peerDependencies": {
-    "babel-generator": "6.x",
-    "babel-template": "6.x",
-    "babel-types": "6.x",
-    "babel": "6.x",
+    "@babel/generator": "7.x",
+    "@babel/template": "7.x",
+    "@babel/types": "7.x",
     "postcss": "7.x.x"
   },
   "devDependencies": {
-    "babel-cli": "^6.9.0",
-    "babel-eslint": "^8.2.2",
-    "babel-generator": "^6.26.1",
-    "babel-template": "^6.26.0",
-    "babel-types": "^6.26.0",
+    "@babel/generator": "^7.4.4",
+    "@babel/template": "^7.4.4",
+    "@babel/types": "^7.4.4",
     "eslint-plugin-immutable": "^1.0.0",
     "eslint-plugin-import": "^2.9.0",
     "eslint-plugin-react": "^7.7.0",
