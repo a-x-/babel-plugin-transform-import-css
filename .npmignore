@@ -4,3 +4,5 @@ node_modules/
 .git/
 examples-dist/
 examples/
+.history
+.vscode/
