@@ -3,7 +3,7 @@ Injects class map imported from css-modules into js.
 Plugin respects webpack css-modules API and postcss config.
 
 # Requirements
-- babel == 7, node >= 8.
+- babel == 7, postcss == 7, node >= 8.
   <br/>**Note**. For babel@6 use previous version of plugin: [0.x.x]
 - babel and postcss configs for best results
 
