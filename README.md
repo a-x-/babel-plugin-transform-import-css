@@ -3,14 +3,13 @@ Injects class map imported from css-modules into js.
 Plugin respects webpack css-modules API and postcss config.
 
 # Requirements
-babel == 6, node >= 8
+babel == 7, node >= 8
 
 babel and postcss configs for best results
 
 # Installation & configuration
 ```sh
 npm add -SD babel-plugin-transform-import-css
-npm add load-styles # puts styles into the head
 ```
 
 **.babelrc** example:
@@ -18,41 +17,33 @@ npm add load-styles # puts styles into the head
 {
   "sourceMaps": "inline",
   "presets": [
-    ["env", {
-      "targets": { "browsers": ["last 2 Chrome versions", "last 1 Safari version"] },
-      "useBuiltIns": false, "modules": false
-    }],
-    "stage-1", "react"
+    "@babel/env",
+    "react"
   ],
   "plugins": [
     ["transform-import-css", {
-      "generateScopedName": "lib-[folder]-[name]-[local]-[hash:base64:4]"
+      "generateScopedName": "lib-[name]-[local]-[hash:base64:4]"
     }]
   ]
 }
 ```
 
-
-# Usage
-
-The following command will convert everything in the `src` folder to `lib` using babel and our plugin.
-
-    babel src/ -d lib/ --presets stage-0,env,react --plugins transform-import-css
-
 Every js file that has a statement such as:
 
 ```js
 import classes from './Component.css'
+// ... some code
 ```
 
-will be roughly translated to:
+will be transpiled to:
 
 ```js
 var classes = {
     root: 'lib-foo-root-SFs0',
-    // ...
+    // ... some classes ...
 }
-require('load-styles')('.root{color:red}') // puts styles into the head
+require('load-styles')('.root{color:red}; ...some css...') // puts styles into the head
+// ... some code
 ```
 
 # Api
