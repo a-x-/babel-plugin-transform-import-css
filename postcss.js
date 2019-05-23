@@ -64,7 +64,7 @@ function normalizeScopedName(generateScopedName, hashPrefix) {
 function loadConfig() {
   // TODO: custom config path
   if (fs.existsSync(path.resolve(PWD, '.postcssrc'))) {
-    return JSON.parse(path.resolve(PWD, '.postcssrc'));
+    return JSON.parse(fs.readFileSync(path.resolve(PWD, '.postcssrc'), 'utf8'));
   }
 
   if (fs.existsSync(path.resolve(PWD, 'postcss.config.js'))) {
