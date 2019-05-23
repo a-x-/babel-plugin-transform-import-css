@@ -1,3 +1,5 @@
+# So Alpha. Current version is unstable 1.0.0-alpha with babel@7 and postcss@7 support! Use stable [0.x.x] version for babel@6 and  postcss@6
+
 Injects class map imported from css-modules into js.
 
 Plugin respects webpack css-modules API and postcss config.
