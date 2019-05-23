@@ -5,8 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const postcss = require('postcss');
-const Values = require('postcss-modules-values');
-const LocalByDefault = require('postcss-icss-selectors');
+const LocalByDefault = require('postcss-icss-selectors'); // fixme: how to remove? here is postcss@6
 const ExtractImports = require('postcss-modules-extract-imports');
 const Scope = require('postcss-modules-scope');
 const ResolveImports = require('postcss-modules-resolve-imports');
@@ -38,7 +37,7 @@ function getPlugins(plugins, { generateScopedName, ext } = {}) {
 
   return [
     ...prepend,
-    Values,
+    // fixme: remove all of this?
     new LocalByDefault({ mode, generateScopedName: scopedName }),
     new ExtractImports({ createImportedName: undefined }),
     new Scope({ generateScopedName: scopedName }),
