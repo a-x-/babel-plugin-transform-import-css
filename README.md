@@ -47,12 +47,20 @@ require('load-styles')('.root{color:red}; ...some css...') // puts styles into t
 ```
 
 # Api
-- `generateScopedName` *optional* css-modules scope template
+- `generateScopedName` — css-modules scope template. **Default**: `[name]__[local]___[hash:base64:5]`
+- `configPath` — postcss config path. **Default**: _auto detect_
+- `ext` — postcss files' extension. Typical use: `ext: '.pcss'`. **Default**: `'.css'`
 
 # Use Cases
 
-Bundling the css with js/react components.
+Bundling the css with npm packed library of js/react components.
 It is good for portability.
+
+# TODO
+- [x] babel@7
+- [x] `configPath` and `ext` options
+- [ ] Compatibility with mini-css-extract-plugin and extract-text-webpack-plugin.
+  babel-plugin-transform-import-css should skip `require('load-styles')(css)` inserting in that cases.
 
 # Alternatives
 - [babel-plugin-react-css-modules](https://github.com/gajus/babel-plugin-react-css-modules)

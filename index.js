@@ -6,7 +6,6 @@ const t = require('@babel/types');
 const CssImport = require('./css-import-visitor');
 const {
   jsToAst, jsStringToAst, constAst, postcss,
-  // retreiveOptions, jssPathname,
 } = require('./helpers');
 
 /* main() { */
@@ -32,7 +31,7 @@ module.exports = function(/*babel*/) {
       ImportDeclaration: {
         exit: CssImport(({ src, css, options, importNode, babelData }) => {
           const postcssOptions = { generateScopedName: options.generateScopedName };
-          const { code, classesMap } = postcss.process(css, src, postcssOptions);
+          const { code, classesMap } = postcss.process(css, src, postcssOptions, options.configPath);
 
           // const jssObject = cssToJss({ code });
           // writeJssFile(jssObject, src);
@@ -50,10 +49,6 @@ module.exports = function(/*babel*/) {
 
 /* } */
 
-// function writeJssFile(jssObject, fromSrc) {
-//   promisify(writeFile)(jssPathname(fromSrc), `module.exports = ${ JSON.stringify(jssObject, null, 2) }`, 'utf8').catch(console.error);
-// }
-
 function classesMapConstAst({ importNode, classesMap }) {
   // XXX: class-names API extending with jssObject (css-in-js object generated on source css)
   const classesMapAst = jsToAst(classesMap);
@@ -61,12 +56,6 @@ function classesMapConstAst({ importNode, classesMap }) {
 
   return constAst(classesMapVarNameAst, classesMapAst);
 }
-
-// function jssCallAst({ src }) {
-//   // TODO: create common jssEmptyPreset
-//   // TODO: target path (not src) OR do not write to separate jss.js file
-//   return jsStringToAst(`require('jss').create(jssEmptyPreset()).createStyleSheet(require('${ jssPathname(src) }'))`);
-// }
 
 function putStyleIntoHeadAst({ code }) {
   return jsStringToAst(`require('load-styles')(\`${ code }\`)`);

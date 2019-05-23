@@ -14,10 +14,11 @@ const ResolveImports = require('postcss-modules-resolve-imports');
 const PWD = process.cwd();
 
 module.exports = {
-  process (css, fromSrc, options) {
+  process (css, fromSrc, options, configPath) {
     // TODO: load options, plugins from .postcssrc / postcss.config.js
-    const { plugins, ...configOptions } = loadConfig();
+    const { plugins, ...configOptions } = loadConfig(configPath);
     const runner = postcss(getPlugins(plugins, options));
+    // source maps don't needed here because we doesn't transform the css
     const lazyResult = runner.process(css, { ...configOptions, ...options, map: false, from: fromSrc });
 
     printWarnings(lazyResult);
@@ -28,8 +29,8 @@ module.exports = {
   },
 };
 
-function getPlugins(plugins, { generateScopedName } = {}) {
-  const extensions = ['.css'];
+function getPlugins(plugins, { generateScopedName, ext } = {}) {
+  const extensions = [ext || '.css'];
   const resolveOpts = {}, prepend = [], append = plugins || [], mode = undefined, hashPrefix = undefined;
   const scopedName = normalizeScopedName(generateScopedName, hashPrefix);
 
@@ -61,15 +62,37 @@ function normalizeScopedName(generateScopedName, hashPrefix) {
   return genericNames(generateScopedName, { context: PWD, hashPrefix });
 }
 
-function loadConfig() {
-  // TODO: custom config path
-  if (fs.existsSync(path.resolve(PWD, '.postcssrc'))) {
-    return JSON.parse(fs.readFileSync(path.resolve(PWD, '.postcssrc'), 'utf8'));
+// function loadConfig() {
+//   if (fs.existsSync(path.resolve(PWD, 'postcss.config.js'))) {
+//     return require(path.resolve(PWD, 'postcss.config.js'));
+//   }
+
+//   // TODO: custom config path
+//   if (fs.existsSync(path.resolve(PWD, '.postcssrc'))) {
+//     return JSON.parse(fs.readFileSync(path.resolve(PWD, '.postcssrc'), 'utf8'));
+//   }
+
+//   return {};
+// }
+
+function loadConfig (configPath) {
+  const rc = {
+    path: path.dirname(file),
+    ctx: {
+      file: {
+        extname: path.extname(file),
+        dirname: path.dirname(file),
+        basename: path.basename(file)
+      },
+      options: {}
+    }
   }
 
-  if (fs.existsSync(path.resolve(PWD, 'postcss.config.js'))) {
-    return require(path.resolve(PWD, 'postcss.config.js'));
+  if (options.config) {
+    if (options.config.path) {
+      rc.path = path.resolve(options.config.path)
+    }
   }
 
-  return {};
+  return postcssrc(rc.ctx, rc.path)
 }

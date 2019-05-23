@@ -11,7 +11,7 @@ function CssImport(cb) {
   return (babelData, { file, opts = {} }) => {
     const { node } = babelData;
     errorBoundary(node.source.value, () => {
-      if (!node.source.value.endsWith('.css')) return;
+      if (!node.source.value.endsWith(opts.ext || '.css')) return;
 
       const { src } = requireResolve(node.source.value, path.resolve(file.opts.filename));
       const css = readFileSync(src, 'utf8');
