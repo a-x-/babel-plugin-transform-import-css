@@ -36,10 +36,18 @@ module.exports = function(/*babel*/) {
           // const jssObject = cssToJss({ code });
           // writeJssFile(jssObject, src);
 
-          babelData.replaceWithMultiple([
-            classesMapConstAst({ classesMap, importNode }),
-            putStyleIntoHeadAst({ code }),
-          ]);
+          // issues: Fails for import statement with no name #2
+          if (importNode.local) {
+            babelData.replaceWithMultiple([
+              classesMapConstAst({ classesMap, importNode }),
+              putStyleIntoHeadAst({ code }),
+            ]);
+          } else {
+            babelData.replaceWithMultiple([
+              putStyleIntoHeadAst({ code }),
+            ]);
+          }
+          
         }),
       },
     },
