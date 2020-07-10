@@ -72,6 +72,7 @@ function loadConfig(configPath) {
 function loadRawConf(configPath) {
   const jsConfPath = /\.js$/.test(configPath) ? configPath : path.resolve(PWD, 'postcss.config.js');
   if (fs.existsSync(jsConfPath)) {
+    delete require.cache[require.resolve(jsConfPath)];
     const conf = require(jsConfPath);
     return { conf, confPath: jsConfPath };
   }
